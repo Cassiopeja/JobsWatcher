@@ -25,7 +25,13 @@ namespace JobsWatcher.Api.MappingProfile
             CreateMap<SubscriptionVacancyDto, SubscriptionVacancy>()
                 .ForMember(dest => dest.Vacancy, opt => opt.MapFrom(src => (Vacancy) null))
                 .ForMember(dest => dest.VacancyId, opt => opt.MapFrom(src => src.Vacancy.Id));
-            CreateMap<GetAllSubscriptionVacanciesQuery, GetAllSubscriptionVacanciesFilter>();
+            CreateMap<GetAllSubscriptionVacanciesQuery, GetAllSubscriptionVacanciesFilter>()
+                .ForMember(dest=> dest.Ratings, opt=> opt.MapFrom(src=>src.Rating))
+                .ForMember(dest=> dest.AreaIds, opt=> opt.MapFrom(src=>src.AreaId))
+                .ForMember(dest=> dest.EmployerIds, opt=> opt.MapFrom(src=>src.EmployerId))
+                .ForMember(dest=> dest.EmploymentIds, opt=> opt.MapFrom(src=>src.EmploymentId))
+                .ForMember(dest=> dest.ScheduleIds, opt=> opt.MapFrom(src=>src.ScheduleId))
+                .ForMember(dest=> dest.SkillIds, opt=> opt.MapFrom(src=>src.SkillId)) ;
             CreateMap<SortByQuery, SortByOptions>()
                 .ForMember(dest=>dest.SortBy, opt=>opt.MapFrom(src=> StartWithMinus(src.SortBy)? src.SortBy.Substring(1): src.SortBy))
                 .ForMember(dest => dest.Ascending, opt => opt.MapFrom(src => !StartWithMinus(src.SortBy)));

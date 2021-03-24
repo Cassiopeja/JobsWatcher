@@ -136,10 +136,10 @@ namespace JobsWatcher.Infrastructure.Services
                 queryable = queryable.Where(sv =>
                     EF.Functions.Like(sv.Vacancy.Descriptions.ToLower(), '%' + filter.SearchText.ToLower() + "%"));
 
-            if (filter.AreaId != null && filter.AreaId.Length > 0)
+            if (filter.AreaIds != null && filter.AreaIds.Length > 0)
             {
                 var predicate = PredicateBuilder.New<SubscriptionVacancy>();
-                foreach (var areaId in filter.AreaId)
+                foreach (var areaId in filter.AreaIds)
                 {
                     predicate = predicate.Or(p => p.Vacancy.AreaId == areaId);
                 }
@@ -147,10 +147,10 @@ namespace JobsWatcher.Infrastructure.Services
                 queryable = queryable.Where(predicate);
             }
 
-            if (filter.EmploymentId != null && filter.EmploymentId.Length > 0)
+            if (filter.EmploymentIds != null && filter.EmploymentIds.Length > 0)
             {
                 var predicate = PredicateBuilder.New<SubscriptionVacancy>();
-                foreach (var employmentId in filter.EmploymentId)
+                foreach (var employmentId in filter.EmploymentIds)
                 {
                     predicate = predicate.Or(p => p.Vacancy.EmploymentId == employmentId);
                 }
@@ -158,10 +158,10 @@ namespace JobsWatcher.Infrastructure.Services
                 queryable = queryable.Where(predicate);
             }
 
-            if (filter.EmployerId != null && filter.EmployerId.Length > 0)
+            if (filter.EmployerIds != null && filter.EmployerIds.Length > 0)
             {
                 var predicate = PredicateBuilder.New<SubscriptionVacancy>();
-                foreach (var employerId in filter.EmployerId)
+                foreach (var employerId in filter.EmployerIds)
                 {
                     predicate = predicate.Or(p => p.Vacancy.EmployerId == employerId);
                 }
@@ -169,10 +169,10 @@ namespace JobsWatcher.Infrastructure.Services
                 queryable = queryable.Where(predicate);
             }
             
-            if (filter.ScheduleId != null && filter.ScheduleId.Length > 0)
+            if (filter.ScheduleIds != null && filter.ScheduleIds.Length > 0)
             {
                 var predicate = PredicateBuilder.New<SubscriptionVacancy>();
-                foreach (var scheduleId in filter.ScheduleId)
+                foreach (var scheduleId in filter.ScheduleIds)
                 {
                     predicate = predicate.Or(p => p.Vacancy.ScheduleId == scheduleId);
                 }
@@ -180,10 +180,10 @@ namespace JobsWatcher.Infrastructure.Services
                 queryable = queryable.Where(predicate);
             }
 
-            if (filter.Rating != null && filter.Rating.Length > 0)
+            if (filter.Ratings != null && filter.Ratings.Length > 0)
             {
                 var predicate = PredicateBuilder.New<SubscriptionVacancy>();
-                foreach (var rating in filter.Rating)
+                foreach (var rating in filter.Ratings)
                 {
                     predicate = predicate.Or(p => p.Rating == rating);
                 }
