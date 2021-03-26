@@ -35,6 +35,7 @@ namespace JobsWatcher.Api.MappingProfile
             CreateMap<SortByQuery, SortByOptions>()
                 .ForMember(dest=>dest.SortBy, opt=>opt.MapFrom(src=> StartWithMinus(src.SortBy)? src.SortBy.Substring(1): src.SortBy))
                 .ForMember(dest => dest.Ascending, opt => opt.MapFrom(src => !StartWithMinus(src.SortBy)));
+            CreateMap<GetAllSkillsQuery, GetAllSkillsFilter>();
         }
 
         private bool StartWithMinus(string text)

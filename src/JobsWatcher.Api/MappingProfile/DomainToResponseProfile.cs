@@ -14,6 +14,7 @@ namespace JobsWatcher.Api.MappingProfile
             CreateMap<Employer, EmployerDto>();
             CreateMap<Employment, EmploymentDto>();
             CreateMap<Schedule, ScheduleDto>();
+            CreateMap<Skill, VacancySkillDto>();
             CreateMap<SourceType, SourceTypeDto>();
             CreateMap<VacancySkill, VacancySkillDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Skill.Id))

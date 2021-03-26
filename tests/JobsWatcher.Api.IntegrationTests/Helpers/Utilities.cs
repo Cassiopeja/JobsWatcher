@@ -22,6 +22,8 @@ namespace JobsWatcher.Api.IntegrationTests.Helpers
         private static Faker<Currency> _currencyFaker;
         private static Faker<Schedule> _scheduleFaker;
         private static Faker<Employment> _employmentFaker;
+        private static Faker<VacancySkill> _vacancySkillFaker;
+        private static Faker<Skill> _skillFaker;
 
         static Utilities()
         {
@@ -52,8 +54,14 @@ namespace JobsWatcher.Api.IntegrationTests.Helpers
             _currencyFaker = new Faker<Currency>()
                 .RuleFor(c => c.Id, 0)
                 .RuleFor(c => c.Name, faker => faker.Finance.Currency().Code);
+            _skillFaker = new Faker<Skill>()
+                .RuleFor(s=>s.Id, 0)
+                .RuleFor(s => s.Name, () => lorem.Word());
+            _vacancySkillFaker = new Faker<VacancySkill>()
+                .RuleFor(vs => vs.Skill, () => _skillFaker.Generate());
             _vacancyFaker = new Faker<Vacancy>()
                 .RuleFor(v => v.Id, 0)
+                .RuleFor(v => v.SourceId, f => f.Random.Number().ToString())
                 .RuleFor(v => v.SourceTypeId, 1)
                 .RuleFor(v => v.Title, () => lorem.Sentence())
                 .RuleFor(v => v.Descriptions, () => lorem.Text())
@@ -64,11 +72,12 @@ namespace JobsWatcher.Api.IntegrationTests.Helpers
                 .RuleFor(v => v.Employer, () => _employerFaker.Generate())
                 .RuleFor(v => v.Employment, () => _employmentFaker.Generate())
                 .RuleFor(v => v.Schedule, () => _scheduleFaker.Generate())
+                .RuleFor(v => v.VacancySkills, () => _vacancySkillFaker.Generate(5))
                 .RuleFor(v => v.SourceCreatedDate, f => f.Date.Past())
                 .RuleFor(v => v.SourceUpdatedDate, (f, v) => v.SourceCreatedDate)
                 .RuleFor(v => v.ContentUpdatedDate, (f, v) => v.SourceCreatedDate);
         }
-
+        
         private static void SetupSubscriptionFakers(Lorem lorem)
         {
             _sourceSubscriptionFaker = new Faker<SourceSubscription>()

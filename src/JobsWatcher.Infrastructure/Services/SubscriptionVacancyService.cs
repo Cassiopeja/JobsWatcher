@@ -191,6 +191,17 @@ namespace JobsWatcher.Infrastructure.Services
                 queryable = queryable.Where(predicate);
             }
 
+            if (filter.SkillIds != null && filter.SkillIds.Length > 0)
+            {
+                var predicate = PredicateBuilder.New<SubscriptionVacancy>();
+                foreach (var skillId in filter.SkillIds)
+                {
+                    predicate = predicate.Or(p => p.Vacancy.VacancySkills.Any(s => s.SkillId == skillId));
+                }
+
+                queryable = queryable.Where(predicate);
+            }
+
             if (filter.IsHidden != null)
             {
                 queryable = queryable.Where(sv => sv.IsHidden == filter.IsHidden);

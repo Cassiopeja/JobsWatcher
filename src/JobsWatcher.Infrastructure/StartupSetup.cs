@@ -47,6 +47,7 @@ namespace JobsWatcher.Infrastructure
             services.AddScoped<IEmployerService, EmployerService>();
             services.AddScoped<IHashService, HashService>();
             services.AddScoped<ISyncSubscriptionService, SyncSubscriptionService>();
+            services.AddScoped<ISkillService, SkillService>();
         }
 
         public static void AddSourceHostedServices(this IServiceCollection services)

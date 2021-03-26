@@ -17,8 +17,9 @@ namespace JobsWatcher.Api.IntegrationTests.Controllers
 {
     public class CustomWebApplicationTestFixture : WebApplicationFactory<Program>
     {
+        private const string ConnectionString = "User ID=postgres;Host=localhost;Port=5432;Database=jobs_tests;Pooling=true;";
         public ITestOutputHelper OutputHelper { get; set; }
-
+        
         protected override IHostBuilder CreateHostBuilder()
         {
             var builder = base.CreateHostBuilder();
@@ -41,14 +42,17 @@ namespace JobsWatcher.Api.IntegrationTests.Controllers
 
                 services.RemoveAll(typeof(DbContextOptions<StorageBroker>));
                 var serviceProvider = new ServiceCollection()
-                    .AddEntityFrameworkInMemoryDatabase()
+                    // .AddLogging(logging => { logging.AddXUnit(OutputHelper); })
+                    .AddEntityFrameworkNpgsql()
                     .BuildServiceProvider();
 
                 services.AddDbContext<StorageBroker>(options =>
                 {
                     options
-                        .UseInMemoryDatabase("InMemoryDbForTesting")
+                        .UseNpgsql(ConnectionString, b => b.MigrationsAssembly("JobsWatcher.Infrastructure"))
+                        .UseLowerCaseNamingConvention()
                         .UseInternalServiceProvider(serviceProvider)
+                        // .EnableSensitiveDataLogging()
                         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
 
@@ -58,6 +62,7 @@ namespace JobsWatcher.Api.IntegrationTests.Controllers
                 using var db = scopedServices.GetRequiredService<StorageBroker>();
                 try
                 {
+                    db.Database.EnsureDeleted();
                     db.Database.EnsureCreated();
                     Utilities.InitializeDbForTests(db);
                 }
