@@ -19,23 +19,19 @@ namespace JobsWatcher.Api.Controllers
     [Route("api/[controller]")]
     public class SubscriptionsController : ControllerBase
     {
+        private readonly IEmployerService _employerService;
         private readonly IMapper _mapper;
         private readonly ISubscriptionService _subscriptionService;
         private readonly ISubscriptionVacancyService _subscriptionVacancyService;
-        private readonly IScheduleService _scheduleService;
-        private readonly IEmployerService _employerService;
 
         public SubscriptionsController(IMapper mapper,
             ISubscriptionService subscriptionService,
             ISubscriptionVacancyService subscriptionVacancyService,
-            IEmploymentService employmentService,
-            IScheduleService scheduleService,
             IEmployerService employerService)
         {
             _mapper = mapper;
             _subscriptionService = subscriptionService;
             _subscriptionVacancyService = subscriptionVacancyService;
-            _scheduleService = scheduleService;
             _employerService = employerService;
         }
 
@@ -213,14 +209,6 @@ namespace JobsWatcher.Api.Controllers
             }
         }
 
-        [HttpGet("{subscriptionId}/schedules")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ScheduleDto>>> GetAllSchedules(int subscriptionId)
-        {
-            var schedules = await _scheduleService.GetSchedulesBySubscriptionIdAsync(subscriptionId);
-            var response = _mapper.Map<List<ScheduleDto>>(schedules);
-            return Ok(response);
-        }
 
         [HttpGet("{subscriptionId}/employers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
