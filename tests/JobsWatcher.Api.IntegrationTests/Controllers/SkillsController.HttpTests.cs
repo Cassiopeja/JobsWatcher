@@ -11,7 +11,8 @@ using Xunit.Abstractions;
 
 namespace JobsWatcher.Api.IntegrationTests.Controllers
 {
-    public class SkillsControllerHttpTests : IClassFixture<CustomWebApplicationTestFixture>, IDisposable
+    [Collection("CustomWebApplication")]
+    public class SkillsControllerHttpTests :  IDisposable
     {
         private readonly HttpClient _client;
         private readonly CustomWebApplicationTestFixture _fixture;

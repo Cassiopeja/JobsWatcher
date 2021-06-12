@@ -13,7 +13,8 @@ using Xunit.Abstractions;
 
 namespace JobsWatcher.Api.IntegrationTests.Controllers
 {
-    public class SubscriptionsControllerHttpTests : IClassFixture<CustomWebApplicationTestFixture>, IDisposable
+    [Collection("CustomWebApplication")]
+    public class SubscriptionsControllerHttpTests : IDisposable
     {
         private readonly HttpClient _client;
         private readonly CustomWebApplicationTestFixture _fixture;
@@ -118,46 +119,7 @@ namespace JobsWatcher.Api.IntegrationTests.Controllers
             pagedResponse.Data.Should().HaveCount(c => c > 0);
         }
 
-        [Fact]
-        public async Task ShouldReturnAreas()
-        {
-            var subscriptionId = 1;
-            
-            var response = await _client.GetAsync($"/api/subscriptions/{subscriptionId}/areas");
-            
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            var pagedResponse = JsonConvert.DeserializeObject<List<AreaDto>>(content);
-            pagedResponse.Should().NotBeNull();
-            pagedResponse.Should().HaveCount(c => c > 0);
-        }
         
-        [Fact]
-        public async Task ShouldReturnEmployments()
-        {
-            var subscriptionId = 1;
-            
-            var response = await _client.GetAsync($"/api/subscriptions/{subscriptionId}/employments");
-            
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            var pagedResponse = JsonConvert.DeserializeObject<List<EmploymentDto>>(content);
-            pagedResponse.Should().NotBeNull();
-            pagedResponse.Should().HaveCount(c => c > 0);
-        }
         
-        [Fact]
-        public async Task ShouldReturnEmployers()
-        {
-            var subscriptionId = 1;
-            
-            var response = await _client.GetAsync($"/api/subscriptions/{subscriptionId}/employers");
-            
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            var pagedResponse = JsonConvert.DeserializeObject<List<EmployerDto>>(content);
-            pagedResponse.Should().NotBeNull();
-            pagedResponse.Should().HaveCount(c => c > 0);
-        }
     }
 }
