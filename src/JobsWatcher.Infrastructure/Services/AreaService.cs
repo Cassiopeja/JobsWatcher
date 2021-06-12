@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace JobsWatcher.Infrastructure.Services
 {
-    public class AreaService : IAreaService
+    public partial class AreaService : IAreaService
     {
         private readonly ILogger<AreaService> _logger;
         private readonly IStorageBroker _storageBroker;
@@ -20,25 +20,28 @@ namespace JobsWatcher.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<List<Area>> GetAreasAsync()
+        public Task<List<Area>> GetAreasAsync()
         {
-            return await _storageBroker.SelectAllAreas().ToListAsync();
+            return TryCatch(async () => await _storageBroker.SelectAllAreas().ToListAsync());
         }
 
-        public async Task<List<Area>> GetAreasBySubscriptionIdAsync(int subscriptionId)
+        public Task<List<Area>> GetAreasBySubscriptionIdAsync(int subscriptionId)
         {
-            return await _storageBroker
-                .SelectAllSubscriptionVacancies()
-                .Where(sv => sv.SourceSubscriptionId == subscriptionId 
-                             && sv.Vacancy.AreaId != null)
-                .Select(sv => 
-                    new Area
-                    {
-                        Id = sv.Vacancy.Area.Id, 
-                        Name = sv.Vacancy.Area.Name
-                    })
-                .Distinct()
-                .ToListAsync();
+            return TryCatch(async () =>
+            {
+                return await _storageBroker
+                    .SelectAllSubscriptionVacancies()
+                    .Where(sv => sv.SourceSubscriptionId == subscriptionId
+                                 && sv.Vacancy.AreaId != null)
+                    .Select(sv =>
+                        new Area
+                        {
+                            Id = sv.Vacancy.Area.Id,
+                            Name = sv.Vacancy.Area.Name
+                        })
+                    .Distinct()
+                    .ToListAsync();
+            });
         }
     }
 }
