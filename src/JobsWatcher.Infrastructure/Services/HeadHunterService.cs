@@ -167,10 +167,19 @@ namespace JobsWatcher.Infrastructure.Services
         private async Task<Employer> GetOrCreateEmployerAsync(SourceType sourceType,
             HeadHunterVacancy headHunterVacancy)
         {
+            var hhEmployer = new HeadHunterEmployer
+            {
+                Name = headHunterVacancy.Employer.Name,
+                Id = headHunterVacancy.Employer.Id,
+                Url = headHunterVacancy.Url
+            };
+            
+            hhEmployer.Id ??= "-999";
+            
             var sourceEmployer =
                 await _storageBroker.SelectSourceEmployerByIdAndTypeIdAsync(sourceType.Id,
-                    headHunterVacancy.Employer.Id) ??
-                await AddSourceEmployerAsync(sourceType, headHunterVacancy.Employer);
+                    hhEmployer.Id) ??
+                await AddSourceEmployerAsync(sourceType, hhEmployer);
             return sourceEmployer.Employer;
         }
 
