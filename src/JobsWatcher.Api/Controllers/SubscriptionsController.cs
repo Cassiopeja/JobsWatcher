@@ -12,7 +12,6 @@ using JobsWatcher.Core.Exceptions.SubscriptionVacancy;
 using JobsWatcher.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace JobsWatcher.Api.Controllers
 {
@@ -23,7 +22,6 @@ namespace JobsWatcher.Api.Controllers
         private readonly IMapper _mapper;
         private readonly ISubscriptionService _subscriptionService;
         private readonly ISubscriptionVacancyService _subscriptionVacancyService;
-        private readonly IEmploymentService _employmentService;
         private readonly IScheduleService _scheduleService;
         private readonly IEmployerService _employerService;
 
@@ -37,7 +35,6 @@ namespace JobsWatcher.Api.Controllers
             _mapper = mapper;
             _subscriptionService = subscriptionService;
             _subscriptionVacancyService = subscriptionVacancyService;
-            _employmentService = employmentService;
             _scheduleService = scheduleService;
             _employerService = employerService;
         }
@@ -214,15 +211,6 @@ namespace JobsWatcher.Api.Controllers
             {
                 return Problem(exception.Message);
             }
-        }
-
-        [HttpGet("{subscriptionId}/employments")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<EmploymentDto>>> GetAllEmployments(int subscriptionId)
-        {
-            var employments = await _employmentService.GetEmploymentsBySubscriptionIdAsync(subscriptionId);
-            var response = _mapper.Map<List<EmploymentDto>>(employments);
-            return Ok(response);
         }
 
         [HttpGet("{subscriptionId}/schedules")]
