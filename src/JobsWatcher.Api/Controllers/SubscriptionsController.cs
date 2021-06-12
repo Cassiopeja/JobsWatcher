@@ -20,28 +20,23 @@ namespace JobsWatcher.Api.Controllers
     [Route("api/[controller]")]
     public class SubscriptionsController : ControllerBase
     {
-        private readonly ILogger<SubscriptionsController> _logger;
         private readonly IMapper _mapper;
         private readonly ISubscriptionService _subscriptionService;
         private readonly ISubscriptionVacancyService _subscriptionVacancyService;
-        private readonly IAreaService _areaService;
         private readonly IEmploymentService _employmentService;
         private readonly IScheduleService _scheduleService;
         private readonly IEmployerService _employerService;
 
-        public SubscriptionsController(ILogger<SubscriptionsController> logger, IMapper mapper,
+        public SubscriptionsController(IMapper mapper,
             ISubscriptionService subscriptionService,
             ISubscriptionVacancyService subscriptionVacancyService,
-            IAreaService areaService,
             IEmploymentService employmentService,
             IScheduleService scheduleService,
             IEmployerService employerService)
         {
-            _logger = logger;
             _mapper = mapper;
             _subscriptionService = subscriptionService;
             _subscriptionVacancyService = subscriptionVacancyService;
-            _areaService = areaService;
             _employmentService = employmentService;
             _scheduleService = scheduleService;
             _employerService = employerService;
@@ -219,15 +214,6 @@ namespace JobsWatcher.Api.Controllers
             {
                 return Problem(exception.Message);
             }
-        }
-
-        [HttpGet("{subscriptionId}/areas")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<AreaDto>>> GetAllAreas(int subscriptionId)
-        {
-            var areas = await _areaService.GetAreasBySubscriptionIdAsync(subscriptionId);
-            var response = _mapper.Map<List<AreaDto>>(areas);
-            return Ok(response);
         }
 
         [HttpGet("{subscriptionId}/employments")]

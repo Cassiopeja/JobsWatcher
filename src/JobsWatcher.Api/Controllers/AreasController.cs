@@ -6,23 +6,20 @@ using JobsWatcher.Core.Exceptions.Area;
 using JobsWatcher.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace JobsWatcher.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AreaController : ControllerBase
+    public class AreasController : ControllerBase
     {
         private readonly IAreaService _areaService;
-        private readonly ILogger<AreaController> _logger;
         private readonly IMapper _mapper;
 
-        public AreaController(IAreaService areaService, IMapper mapper, ILogger<AreaController> logger)
+        public AreasController(IAreaService areaService, IMapper mapper)
         {
             _areaService = areaService;
             _mapper = mapper;
-            _logger = logger;
         }
 
         [HttpGet]
