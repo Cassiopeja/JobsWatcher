@@ -27,6 +27,11 @@ namespace JobsWatcher.Infrastructure.Brokers.StorageBroker
 
         public async Task<VacancySkill> InsertVacancySkillsAsync(VacancySkill vacancySkill)
         {
+            var existed = await SelectVacancySkillsByIdAsync(vacancySkill.SkillId, vacancySkill.VacancyId);
+            if (existed != null)
+            {
+                return existed;
+            }
             var skillVacancyEntry = await VacancySkills.AddAsync(vacancySkill);
             await SaveChangesAsync();
             return skillVacancyEntry.Entity;
