@@ -5,6 +5,7 @@ using AutoMapper;
 using JobsWatcher.Api.Contracts.Dto;
 using JobsWatcher.Api.Contracts.Requests.Queries;
 using JobsWatcher.Api.Contracts.Responses;
+using JobsWatcher.Api.MappingProfile;
 using JobsWatcher.Core.Entities;
 using JobsWatcher.Core.Entities.Source;
 using JobsWatcher.Core.Exceptions.Subscription;
@@ -187,6 +188,42 @@ namespace JobsWatcher.Api.Controllers
                         paginationFilter, sortByOption);
                 var vacanciesResponse = _mapper.Map<PagedResponse<SubscriptionVacancyDto>>(pagedVacancies);
                 return Ok(vacanciesResponse);
+            }
+            catch (SubscriptionVacancyValidationException exception)
+                when (exception.InnerException is NotFoundSubscriptionException)
+            {
+                var innerMessage = GetInnerMessage(exception);
+
+                return NotFound(innerMessage);
+            }
+            catch (SubscriptionVacancyValidationException exception)
+            {
+                var innerMessage = GetInnerMessage(exception);
+
+                return BadRequest(innerMessage);
+            }
+            catch (SubscriptionVacancyServiceException exception)
+            {
+                return Problem(exception.Message);
+            }
+        }
+        
+        [HttpGet("{subscriptionId}/grouped/vacancies")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PagedResponse<EmployerVacanciesDto>>> GetAllSubscriptionVacanciesGroupedByCompany(
+            int subscriptionId,
+            [FromQuery] GetAllSubscriptionVacanciesQuery query,
+            [FromQuery] PaginationQuery paginationQuery)
+        {
+            try
+            {
+                var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
+                var queryFilter = _mapper.Map<GetAllSubscriptionVacanciesFilter>(query);
+                var pagedVacancies =
+                    await _subscriptionVacancyService.GetSubscriptionVacanciesGroupByCompanyAsync(subscriptionId, queryFilter,
+                        paginationFilter);
+                var groupedResponse = pagedVacancies.ToGroupedVacancies(_mapper);
+                return Ok(groupedResponse);
             }
             catch (SubscriptionVacancyValidationException exception)
                 when (exception.InnerException is NotFoundSubscriptionException)

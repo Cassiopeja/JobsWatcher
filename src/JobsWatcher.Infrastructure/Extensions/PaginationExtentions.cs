@@ -20,5 +20,15 @@ namespace JobsWatcher.Infrastructure.Extensions
             var items = await source.ToListAsync();
             return new PagedItems<T>(items);
         }
+        
+        public static async Task<PagedItems<T>> ToPagedItemsAsync<T>(this IQueryable<T> source, PaginationFilter paginationFilter)
+        {
+            if (paginationFilter == null)
+                return await ToPagedItemsAsync(source);
+
+            return await ToPagedItemsAsync(source, paginationFilter.PageNumber, paginationFilter.PageSize);
+        }
+        
+        
     }
 }
